@@ -28,7 +28,7 @@ This will:
 4. Set the fetch url to the Github repo
 5. Set push urls to both, the Azure DevOps and Github repos
 
-> Why do I need this? Well, that's a history for another day.
+> Why do I need this? Well, that's a story for another day.
 
 ```shell
 python g.py create <branch_name>
