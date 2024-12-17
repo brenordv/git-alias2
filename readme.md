@@ -64,7 +64,7 @@ REM Activate the virtual environment
 call %PROJECT_DIR%\venv\Scripts\activate
 
 REM Run the Python script using an absolute path
-python %PROJECT_DIR%\script.py
+python %PROJECT_DIR%\g.py %*
 
 REM Deactivate the virtual environment
 deactivate
