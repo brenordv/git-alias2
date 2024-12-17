@@ -34,8 +34,9 @@ def _extract_token_scopes_from_output(output: str) -> str:
 def _is_logged_in() -> bool:
     logger = get_logger()
     output = _run_gb_cmd(["gh", "auth", "status"])
+    l_output = output.lower()
 
-    is_logged = "logged in to github.com as" in output.lower()
+    is_logged = any([msg in l_output for msg in ["logged in to github.com account", "logged in to github.com as"]])
     if not is_logged:
         logger.warning(f"{_tag} Not logged in.")
         return is_logged
