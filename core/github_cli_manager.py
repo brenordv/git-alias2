@@ -23,7 +23,10 @@ def _run_gb_cmd(command: List[str]) -> str:
 
 
 def _extract_username_from_output(output: str) -> str:
-    return output.split("github.com as")[1].strip().split(" ")[0].strip()
+    try:
+        return output.split("github.com as")[1].strip().split(" ")[0].strip()
+    except IndexError:
+        return output.split("github.com account")[1].strip().split(" ")[0].strip()
 
 
 def _extract_token_scopes_from_output(output: str) -> str:

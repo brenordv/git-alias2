@@ -4,7 +4,7 @@ import subprocess
 from typing import List
 
 from core.decorators import stop_watch
-from core.utils import get_logger, run_external_command
+from core.utils import get_logger
 
 _tag = "[Azure]"
 
@@ -21,16 +21,12 @@ def _run_az_cmd(command: List[str]) -> str:
 @stop_watch(f"{_tag} Checking session")
 def _is_logged_in() -> bool:
     logger = get_logger()
-    output = _run_az_cmd(["az", "account", "show"])
+    output = _run_az_cmd(["az", "devops", "project", "list"])
     try:
         json_output = json.loads(output)
-
-        subscription_type = "default" if json_output.get("isDefault", False) else "alternative"
-        subscription_name = json_output.get("name", "unknown")
-        subscription_state = json_output.get("state", "unknown")
-        user_name = json_output.get("user", {}).get("name", "unknown").split("@")[0]
+        projects = json_output.get("value", [])
         logger.info(
-            f"{_tag} Logged in as {user_name} with {subscription_type} subscription '{subscription_name}' ({subscription_state})")
+            f"{_tag} Logged in. Found {len(projects)} project(s).")
 
         return True
     except json.JSONDecodeError:
@@ -40,7 +36,7 @@ def _is_logged_in() -> bool:
 
 @stop_watch(f"{_tag} Logging in")
 def _login() -> bool:
-    output = _run_az_cmd(["az", "login"])
+    output = _run_az_cmd(["az", "devops", "login"])
     try:
         json.loads(output)
         return _is_logged_in()
