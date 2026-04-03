@@ -1,3 +1,0 @@
-GitPython == 3.1.43
-raccoontools == 1.1.1
-requests>=2.32.0

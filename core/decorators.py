@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 from functools import wraps
+
 from raccoon_simple_stopwatch.stopwatch import StopWatch
 
 from core.utils import get_logger
