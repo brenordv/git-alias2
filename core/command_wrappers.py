@@ -95,9 +95,17 @@ def fix_create_command(provider_names: list[str] | None = None) -> None:
         try:
             provider = get_provider(name)
             provider.ensure_logged_in()
-            url = provider.create_repo(repo_name)
+
+            try:
+                url = provider.get_remote_url(repo_name)
+                logger.info(
+                    f"{provider.display_name} repo already exists: {url}"
+                )
+            except GitAliasError:
+                url = provider.create_repo(repo_name)
+                logger.info(f"Created {provider.display_name} repo: {url}")
+
             new_urls.append(url)
-            logger.info(f"Created {provider.display_name} repo: {url}")
         except GitAliasError as e:
             fix = suggest_fix(e, name)
             logger.error(f"Failed to create repo on {name}: {e}")
