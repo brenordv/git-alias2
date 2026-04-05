@@ -69,6 +69,15 @@ class TestAzureProviderGetRemoteUrl:
         with pytest.raises(RepoCreationError):
             provider.get_remote_url("repo")
 
+    @patch("core.providers.azure.run_cli")
+    def test_nonzero_returncode_includes_stderr(self, mock_run):
+        mock_run.return_value = _make_result(
+            stdout="", stderr="TF401019: The project does not exist", returncode=1
+        )
+        provider = AzureDevOpsProvider()
+        with pytest.raises(RepoCreationError, match="TF401019"):
+            provider.get_remote_url("repo")
+
 
 class TestAzureProviderCreateRepo:
     @patch.object(AzureDevOpsProvider, "get_remote_url")
@@ -105,6 +114,24 @@ class TestAzureProviderCreateRepo:
         mock_run.return_value = _make_result(stdout="error text")
         provider = AzureDevOpsProvider()
         with pytest.raises(RepoCreationError):
+            provider.create_repo("my-repo")
+
+    @patch("core.providers.azure.run_cli")
+    def test_nonzero_returncode_includes_stderr(self, mock_run):
+        mock_run.return_value = _make_result(
+            stdout="", stderr="Permission denied: insufficient privileges", returncode=1
+        )
+        provider = AzureDevOpsProvider()
+        with pytest.raises(RepoCreationError, match="insufficient privileges"):
+            provider.create_repo("my-repo")
+
+    @patch("core.providers.azure.run_cli")
+    def test_nonzero_returncode_falls_back_to_stdout(self, mock_run):
+        mock_run.return_value = _make_result(
+            stdout="some error on stdout", stderr="", returncode=1
+        )
+        provider = AzureDevOpsProvider()
+        with pytest.raises(RepoCreationError, match="some error on stdout"):
             provider.create_repo("my-repo")
 
 

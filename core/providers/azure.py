@@ -67,6 +67,13 @@ class AzureDevOpsProvider(Provider):
             strip_ansi=True,
             check=False,
         )
+
+        if result.returncode != 0:
+            output = result.stderr or result.stdout
+            raise RepoCreationError(
+                f"{_tag} Could not get remote url. Output: {output}"
+            )
+
         try:
             json_output = json.loads(result.stdout)
             repo_url = json_output.get("remoteUrl")
@@ -77,7 +84,7 @@ class AzureDevOpsProvider(Provider):
             return repo_url
         except json.JSONDecodeError:
             raise RepoCreationError(
-                f"{_tag} Could not get remote url. Output: {result.stdout}"
+                f"{_tag} Could not get remote url. Output: {result.stderr or result.stdout}"
             )
 
     @stop_watch(f"{_tag} Creating project + repository")
@@ -93,6 +100,13 @@ class AzureDevOpsProvider(Provider):
             strip_ansi=True,
             check=False,
         )
+
+        if result.returncode != 0:
+            output = result.stderr or result.stdout
+            raise RepoCreationError(
+                f"{_tag} Project creation failed. Output: {output}"
+            )
+
         try:
             json_output = json.loads(result.stdout)
             project_id = json_output.get("id")
@@ -111,5 +125,5 @@ class AzureDevOpsProvider(Provider):
 
         except json.JSONDecodeError:
             raise RepoCreationError(
-                f"{_tag} Project creation failed. Output: {result.stdout}"
+                f"{_tag} Project creation failed. Output: {result.stderr or result.stdout}"
             )
