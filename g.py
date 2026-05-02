@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from core.command_wrappers import add_remote_command, create_command, fix_create_command
+from core.command_wrappers import add_remote_command, create_command, fix_create_command, tag_command
 from core.config import disable_provider, enable_provider, is_provider_disabled
 from core.diagnostics import doctor
 from core.exceptions import GitAliasError
@@ -79,6 +79,23 @@ enable_parser.add_argument(
     help="Provider to enable",
 )
 
+# tag
+tag_parser = subparsers.add_parser(
+    "tag", help="Create an annotated tag on master."
+)
+tag_parser.add_argument("tag_name", type=str, help="Name of the tag")
+tag_parser.add_argument(
+    "-m",
+    "--message",
+    type=str,
+    help="Tag message (default: 'New version: <tag_name>')",
+)
+tag_parser.add_argument(
+    "--push",
+    action="store_true",
+    help="Push the tag to origin after creation",
+)
+
 # doctor
 subparsers.add_parser("doctor", help="Run diagnostics and report system status.")
 
@@ -107,6 +124,8 @@ def main():
                 enable_provider(args.provider)
                 print(f"Enabled {args.provider}.")
                 print(f"Use 'g fix-create' to create repos on any missing providers.")
+        elif args.command == "tag":
+            tag_command(args.tag_name, args.message, args.push)
         elif args.command == "doctor":
             doctor()
         else:
