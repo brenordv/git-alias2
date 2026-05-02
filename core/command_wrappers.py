@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
 
+from git import Repo
+
 from core.config import filter_disabled
 from core.diagnostics import preflight_check, suggest_fix
 from core.exceptions import GitAliasError
-from core.git_manager import config_repo
+from core.git_manager import checkout_branch, config_repo, create_tag, pull, push_tag
 from core.providers.registry import DEFAULT_PROVIDERS, get_provider
 from core.repo_analyzer import (
     detect_repo_name,
@@ -116,8 +118,6 @@ def fix_create_command(provider_names: list[str] | None = None) -> None:
     if not is_git_repo(cwd):
         config_repo(cwd, new_urls)
     else:
-        from git import Repo
-
         repo = Repo(cwd)
         if "origin" in [r.name for r in repo.remotes]:
             origin = repo.remote("origin")
@@ -156,8 +156,6 @@ def add_remote_command(
     url = provider.create_repo(repo_name)
     logger.info(f"Created {provider.display_name} repo: {url}")
 
-    from git import Repo
-
     repo = Repo(cwd)
 
     if set_fetch:
@@ -182,3 +180,31 @@ def add_remote_command(
         else:
             repo.create_remote("origin", url)
         logger.info(f"Added {provider.display_name} as push URL")
+
+
+def tag_command(
+    tag_name: str,
+    message: str | None = None,
+    push: bool = False,
+) -> None:
+    logger = get_logger()
+    cwd = Path(os.getcwd())
+
+    if not is_git_repo(cwd):
+        logger.error("Not a git repository. Cannot create tag.")
+        return
+
+    repo = Repo(cwd)
+    message = message or f"New version: {tag_name}"
+
+    checkout_branch(repo, "master")
+    pull(repo)
+    create_tag(repo, tag_name, message)
+
+    if push:
+        push_tag(repo, tag_name)
+    else:
+        logger.info(
+            f"Tag '{tag_name}' created locally. "
+            f"Push with: git push origin {tag_name}"
+        )

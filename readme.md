@@ -130,6 +130,20 @@ Options:
 g add-remote gitlab --repo-name my-repo --set-fetch
 ```
 
+### `g tag <tag_name>`
+Creates an annotated tag on the `master` branch. Checks out `master`, pulls the latest changes, then creates the tag:
+```shell
+g tag v1.0.0
+```
+
+Options:
+- `-m, --message <message>` — custom tag message (default: `"New version: <tag_name>"`)
+- `--push` — push the tag to origin after creation
+
+```shell
+g tag v1.0.0 -m "Release 1.0.0" --push
+```
+
 ## Running Tests
 ```shell
 uv run pytest

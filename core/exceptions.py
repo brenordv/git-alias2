@@ -12,3 +12,7 @@ class ProviderCommandError(GitAliasError):
 
 class RepoCreationError(GitAliasError):
     """Raised when repository creation fails."""
+
+
+class GitOperationError(GitAliasError):
+    """Raised when a git operation (checkout, pull, tag, push) fails."""
