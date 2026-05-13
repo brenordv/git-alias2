@@ -6,10 +6,10 @@ build-backend = "setuptools.build_meta"
 name = "git-alias2"
 version = "2.1.0"
 description = "Git aliases for multi-provider repository management"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    "GitPython>=3.1.49",
-    "raccoontools>=2.0.1",
+    "GitPython==3.1.50",
+    "raccoontools==3.2.0",
 ]
 
 [project.scripts]
