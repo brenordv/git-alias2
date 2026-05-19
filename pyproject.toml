@@ -9,7 +9,7 @@ description = "Git aliases for multi-provider repository management"
 requires-python = ">=3.11"
 dependencies = [
     "GitPython==3.1.50",
-    "raccoontools==3.2.0",
+    "raccoontools==3.3.0",
 ]
 
 [project.scripts]
