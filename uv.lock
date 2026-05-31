@@ -120,7 +120,7 @@ wheels = [
 
 [[package]]
 name = "git-alias2"
-version = "2.1.0"
+version = "2.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "gitpython" },
@@ -136,7 +136,7 @@ dev = [
 requires-dist = [
     { name = "gitpython", specifier = "==3.1.50" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
-    { name = "raccoontools", specifier = "==3.3.0" },
+    { name = "raccoontools", specifier = "==3.3.1" },
 ]
 provides-extras = ["dev"]
 
@@ -166,11 +166,11 @@ wheels = [
 
 [[package]]
 name = "idna"
-version = "3.11"
+version = "3.17"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/0703ccc57f3a7233505399edb88de3cbd678da106337b9fcde432b65ed60/idna-3.11.tar.gz", hash = "sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902", size = 194582, upload-time = "2025-10-12T14:55:20.501Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/28/99c51f664567218d824af024c0251650fb27e4ca066df188dab0769c5b91/idna-3.17.tar.gz", hash = "sha256:5eb0cb53bc467c12eadcf6de83163ad8527cec9416f44b9b61b19caedad2b87f", size = 196048, upload-time = "2026-05-28T14:32:38.55Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl", hash = "sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea", size = 71008, upload-time = "2025-10-12T14:55:18.883Z" },
+    { url = "https://files.pythonhosted.org/packages/de/a7/f76514cc40ad6234098ecdebda08732d75964776c51a42845b7da10649e2/idna-3.17-py3-none-any.whl", hash = "sha256:466e48829084efe2548012b855df21540b96f2e20e51bd124c851536556a592c", size = 65316, upload-time = "2026-05-28T14:32:37.035Z" },
 ]
 
 [[package]]
@@ -365,18 +365,19 @@ wheels = [
 
 [[package]]
 name = "raccoontools"
-version = "3.3.0"
+version = "3.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "idna" },
     { name = "pydantic" },
     { name = "raccoon-simple-stopwatch" },
     { name = "requests" },
     { name = "simple-log-factory" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/02/f69eeabe442b4185673e9d2077e8eff58c9fa009bc5783103a9c39516282/raccoontools-3.3.0.tar.gz", hash = "sha256:72f08d6907415dfae9506154dce68ff5d254c0ba8156c1e6bdfe2da9f5502505", size = 40843, upload-time = "2026-05-15T00:11:59.425Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/06/c2c47b869d620c6136b9147a18f788310e61ef77abbf9c5fab36e37af79f/raccoontools-3.3.1.tar.gz", hash = "sha256:d82d84ffe34cc033aa8caa882637417bc1536893cb5624a7303fb486a2a0a92b", size = 40921, upload-time = "2026-05-31T21:12:26.788Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/68/84c0b1f85acc17338839d3e731d730cbde2fc436a6da19b86c677e774ac2/raccoontools-3.3.0-py3-none-any.whl", hash = "sha256:6a21fdda2b1637ba10312cbd263291f9cbba0e6d160b6caf84493699542d4e9e", size = 26143, upload-time = "2026-05-15T00:11:58.213Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/af/0df6fb2575865807629552b4e6ee15f073e72db187f26043d3a8639f5ccf/raccoontools-3.3.1-py3-none-any.whl", hash = "sha256:6addf3c94cb37295d4f0309f9e677f21df3f3d34548d7c97e3d72cb6ef60b65e", size = 26153, upload-time = "2026-05-31T21:12:25.58Z" },
 ]
 
 [[package]]
