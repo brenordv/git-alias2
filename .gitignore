@@ -1,4 +1,3 @@
-.data/
 !.pixi/config.toml
 *$py.class
 *.aof
@@ -26,6 +25,7 @@
 .claude/
 .coverage
 .coverage.*
+.data/
 .dmypy.json
 .eggs/
 .env
