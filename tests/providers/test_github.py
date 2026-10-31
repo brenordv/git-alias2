@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from core.exceptions import ProviderAuthError, RepoCreationError
+from core.exceptions import RepoCreationError
 from core.providers.github import (
     GitHubProvider,
     _extract_token_scopes_from_output,
@@ -58,9 +58,7 @@ class TestGitHubProviderCheckAuth:
 
     @patch("core.providers.github.run_cli")
     def test_not_logged_in(self, mock_run):
-        mock_run.return_value = _make_result(
-            stderr="You are not logged into any GitHub hosts."
-        )
+        mock_run.return_value = _make_result(stderr="You are not logged into any GitHub hosts.")
         provider = GitHubProvider()
         is_auth, msg = provider.check_auth()
         assert is_auth is False
@@ -69,18 +67,14 @@ class TestGitHubProviderCheckAuth:
 class TestGitHubProviderGetRemoteUrl:
     @patch("core.providers.github.run_cli")
     def test_valid_json(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout=json.dumps({"url": "https://github.com/user/repo"})
-        )
+        mock_run.return_value = _make_result(stdout=json.dumps({"url": "https://github.com/user/repo"}))
         provider = GitHubProvider()
         url = provider.get_remote_url("repo")
         assert url == "https://github.com/user/repo.git"
 
     @patch("core.providers.github.run_cli")
     def test_url_already_has_git_suffix(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout=json.dumps({"url": "https://github.com/user/repo.git"})
-        )
+        mock_run.return_value = _make_result(stdout=json.dumps({"url": "https://github.com/user/repo.git"}))
         provider = GitHubProvider()
         url = provider.get_remote_url("repo")
         assert url == "https://github.com/user/repo.git"
@@ -103,9 +97,7 @@ class TestGitHubProviderGetRemoteUrl:
 class TestGitHubProviderCreateRepo:
     @patch("core.providers.github.run_cli")
     def test_success(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout="https://github.com/user/my-repo\n"
-        )
+        mock_run.return_value = _make_result(stdout="https://github.com/user/my-repo\n")
         provider = GitHubProvider()
         url = provider.create_repo("my-repo")
         assert url == "https://github.com/user/my-repo.git"
@@ -121,4 +113,5 @@ class TestGitHubProviderCreateRepo:
 def _make_result(stdout="", stderr="", returncode=0):
     """Helper to create a mock CompletedProcess."""
     from subprocess import CompletedProcess
+
     return CompletedProcess(args=[], returncode=returncode, stdout=stdout, stderr=stderr)

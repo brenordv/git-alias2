@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from urllib.parse import unquote
 
 from git import InvalidGitRepositoryError, Repo
 
@@ -22,19 +23,17 @@ def get_existing_remotes(repo_path: Path) -> dict[str, list[str]]:
 
 
 def detect_repo_name(remotes: dict[str, list[str]]) -> str:
-    """Extract repo name from existing remote URLs."""
+    """Extract repo name from existing remote URLs, decoding percent-escapes (Azure writes spaces as ``%20``)."""
     for urls in remotes.values():
         for url in urls:
-            name = url.rstrip("/").split("/")[-1]
+            name = unquote(url.rstrip("/").split("/")[-1])
             if name.endswith(".git"):
                 name = name[:-4]
             return name
     return ""
 
 
-def get_missing_providers(
-    remotes: dict[str, list[str]], desired: list[str]
-) -> list[str]:
+def get_missing_providers(remotes: dict[str, list[str]], desired: list[str]) -> list[str]:
     """Return provider names that are not yet configured as remotes."""
     return [p for p in desired if p not in remotes]
 

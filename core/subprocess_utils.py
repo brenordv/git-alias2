@@ -33,9 +33,7 @@ def run_cli(
 
     if check and result.returncode != 0:
         output = (result.stderr or result.stdout).strip()
-        raise ProviderCommandError(
-            f"Command failed (exit code {result.returncode}): {' '.join(command)}\n{output}"
-        )
+        raise ProviderCommandError(f"Command failed (exit code {result.returncode}): {' '.join(command)}\n{output}")
 
     return result
 

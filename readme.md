@@ -15,22 +15,17 @@ That being said: You need to have the CLI applications installed and configured 
 ## Installation
 
 ### Prerequisites
-- Python 3.10+
+- Python 3.11+
 - [uv](https://docs.astral.sh/uv/) package manager
 
 ### Setup
 1. Clone this repository
-2. Install dependencies:
+2. Install dependencies (this includes the `dev` dependency group with pytest, ruff and mypy):
 ```shell
 uv sync
 ```
 
-3. To also install dev dependencies (pytest):
-```shell
-uv sync --all-extras
-```
-
-4. Add `g` to your path. What I usually do is add a bat (on Windows) that calls the script:
+3. Add `g` to your path. What I usually do is add a bat (on Windows) that calls the script:
 ```bat
 @echo off
 uv run --project Z:\path\to\git_alias2 g %*
@@ -147,4 +142,11 @@ g tag v1.0.0 -m "Release 1.0.0" --push
 ## Running Tests
 ```shell
 uv run pytest
+```
+
+Lint, format and type checks:
+```shell
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy core g.py
 ```
