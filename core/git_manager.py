@@ -39,6 +39,8 @@ def checkout_branch(repo: Repo, branch: str = "master") -> None:
         repo.heads[branch].checkout()
     except IndexError as e:
         raise GitOperationError(f"Branch '{branch}' not found") from e
+    except GitCommandError as e:
+        raise GitOperationError(f"Checkout of '{branch}' failed: {e}") from e
 
 
 @stop_watch(f"{_tag} Pull latest changes.")
@@ -68,8 +70,6 @@ def push_tag(repo: Repo, tag_name: str) -> None:
     try:
         result = repo.remotes.origin.push(tag_name)
         if result and result[0].flags & result[0].ERROR:
-            raise GitOperationError(
-                f"Push rejected for tag '{tag_name}': {result[0].summary}"
-            )
+            raise GitOperationError(f"Push rejected for tag '{tag_name}': {result[0].summary}")
     except GitCommandError as e:
         raise GitOperationError(f"Failed to push tag '{tag_name}': {e}") from e

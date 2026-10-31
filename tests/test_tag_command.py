@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 from core.command_wrappers import tag_command
 
@@ -11,17 +11,20 @@ class TestTagCommand:
     @patch("core.command_wrappers.Repo")
     @patch("core.command_wrappers.is_git_repo", return_value=True)
     def test_creates_tag_with_default_message(
-        self, mock_is_git, mock_repo, mock_checkout, mock_pull,
-        mock_create_tag, mock_push,
+        self,
+        mock_is_git,
+        mock_repo,
+        mock_checkout,
+        mock_pull,
+        mock_create_tag,
+        mock_push,
     ):
         repo_instance = MagicMock()
         mock_repo.return_value = repo_instance
 
         tag_command("v1.0.0")
 
-        mock_create_tag.assert_called_once_with(
-            repo_instance, "v1.0.0", "New version: v1.0.0"
-        )
+        mock_create_tag.assert_called_once_with(repo_instance, "v1.0.0", "New version: v1.0.0")
 
     @patch("core.command_wrappers.push_tag")
     @patch("core.command_wrappers.create_tag")
@@ -30,17 +33,20 @@ class TestTagCommand:
     @patch("core.command_wrappers.Repo")
     @patch("core.command_wrappers.is_git_repo", return_value=True)
     def test_creates_tag_with_custom_message(
-        self, mock_is_git, mock_repo, mock_checkout, mock_pull,
-        mock_create_tag, mock_push,
+        self,
+        mock_is_git,
+        mock_repo,
+        mock_checkout,
+        mock_pull,
+        mock_create_tag,
+        mock_push,
     ):
         repo_instance = MagicMock()
         mock_repo.return_value = repo_instance
 
         tag_command("v2.0.0", message="Big release!")
 
-        mock_create_tag.assert_called_once_with(
-            repo_instance, "v2.0.0", "Big release!"
-        )
+        mock_create_tag.assert_called_once_with(repo_instance, "v2.0.0", "Big release!")
 
     @patch("core.command_wrappers.push_tag")
     @patch("core.command_wrappers.create_tag")
@@ -49,8 +55,13 @@ class TestTagCommand:
     @patch("core.command_wrappers.Repo")
     @patch("core.command_wrappers.is_git_repo", return_value=True)
     def test_pushes_tag_when_flag_set(
-        self, mock_is_git, mock_repo, mock_checkout, mock_pull,
-        mock_create_tag, mock_push,
+        self,
+        mock_is_git,
+        mock_repo,
+        mock_checkout,
+        mock_pull,
+        mock_create_tag,
+        mock_push,
     ):
         repo_instance = MagicMock()
         mock_repo.return_value = repo_instance
@@ -66,8 +77,13 @@ class TestTagCommand:
     @patch("core.command_wrappers.Repo")
     @patch("core.command_wrappers.is_git_repo", return_value=True)
     def test_does_not_push_when_flag_not_set(
-        self, mock_is_git, mock_repo, mock_checkout, mock_pull,
-        mock_create_tag, mock_push,
+        self,
+        mock_is_git,
+        mock_repo,
+        mock_checkout,
+        mock_pull,
+        mock_create_tag,
+        mock_push,
     ):
         tag_command("v1.0.0")
 
@@ -80,8 +96,13 @@ class TestTagCommand:
     @patch("core.command_wrappers.Repo")
     @patch("core.command_wrappers.is_git_repo", return_value=False)
     def test_errors_when_not_git_repo(
-        self, mock_is_git, mock_repo, mock_checkout, mock_pull,
-        mock_create_tag, mock_push,
+        self,
+        mock_is_git,
+        mock_repo,
+        mock_checkout,
+        mock_pull,
+        mock_create_tag,
+        mock_push,
     ):
         tag_command("v1.0.0")
 
@@ -96,8 +117,13 @@ class TestTagCommand:
     @patch("core.command_wrappers.Repo")
     @patch("core.command_wrappers.is_git_repo", return_value=True)
     def test_checkout_and_pull_before_tag(
-        self, mock_is_git, mock_repo, mock_checkout, mock_pull,
-        mock_create_tag, mock_push,
+        self,
+        mock_is_git,
+        mock_repo,
+        mock_checkout,
+        mock_pull,
+        mock_create_tag,
+        mock_push,
     ):
         repo_instance = MagicMock()
         mock_repo.return_value = repo_instance

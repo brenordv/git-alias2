@@ -35,7 +35,7 @@ class GitLabProvider(Provider):
         output = result.stdout or result.stderr
         l_output = output.lower()
 
-        if "logged in" in l_output:
+        if "logged in" in l_output and "not logged in" not in l_output:
             return True, "Logged in to GitLab"
         return False, "Not logged in to GitLab"
 
@@ -66,24 +66,16 @@ class GitLabProvider(Provider):
 
     @stop_watch(f"{_tag} Fetching repository remote url")
     def get_remote_url(self, name: str) -> str:
-        result = run_cli(
-            ["glab", "repo", "view", name, "--output", "json"], check=False
-        )
+        result = run_cli(["glab", "repo", "view", name, "--output", "json"], check=False)
         output = result.stdout or result.stderr
         try:
             json_output = json.loads(output)
-            repo_url = json_output.get("http_url_to_repo") or json_output.get(
-                "web_url"
-            )
+            repo_url = json_output.get("http_url_to_repo") or json_output.get("web_url")
             if repo_url is None:
-                raise RepoCreationError(
-                    f"{_tag} Could not get remote url. Output: {output}"
-                )
+                raise RepoCreationError(f"{_tag} Could not get remote url. Output: {output}")
             return ensure_git_suffix(repo_url)
         except json.JSONDecodeError:
-            raise RepoCreationError(
-                f"{_tag} Could not get remote url. Output: {output}"
-            )
+            raise RepoCreationError(f"{_tag} Could not get remote url. Output: {output}")
 
     @stop_watch(f"{_tag} Creating repository")
     def create_repo(self, name: str) -> str:
@@ -95,9 +87,7 @@ class GitLabProvider(Provider):
         output = (result.stdout or result.stderr).strip()
 
         if result.returncode != 0:
-            raise RepoCreationError(
-                f"{_tag} Repository creation failed. Output: {output}"
-            )
+            raise RepoCreationError(f"{_tag} Repository creation failed. Output: {output}")
 
         # Try to extract URL from output
         for line in output.splitlines():

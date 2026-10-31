@@ -1,4 +1,3 @@
-import json
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
@@ -14,6 +13,7 @@ from core.config import (
 
 def _with_temp_config(func):
     """Run a test with a temporary config file."""
+
     def wrapper(*args, **kwargs):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             tmp = Path(f.name)
@@ -23,6 +23,7 @@ def _with_temp_config(func):
                 return func(*args, **kwargs)
         finally:
             tmp.unlink(missing_ok=True)
+
     return wrapper
 
 

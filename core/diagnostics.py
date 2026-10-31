@@ -14,18 +14,12 @@ _FIX_SUGGESTIONS: dict[str, dict[str, str]] = {
     "az": {
         "not_found": "Install Azure CLI: https://aka.ms/install-azure-cli",
         "auth_failed": "Run: az devops login",
-        "permission": (
-            "Create a PAT at your Azure DevOps org: "
-            "User Settings > Personal Access Tokens"
-        ),
+        "permission": ("Create a PAT at your Azure DevOps org: User Settings > Personal Access Tokens"),
     },
     "glab": {
         "not_found": "Install GitLab CLI: https://gitlab.com/gitlab-org/cli",
         "auth_failed": "Run: glab auth login",
-        "permission": (
-            "Create a token at: "
-            "https://gitlab.com/-/user_settings/personal_access_tokens"
-        ),
+        "permission": ("Create a token at: https://gitlab.com/-/user_settings/personal_access_tokens"),
     },
 }
 
@@ -78,9 +72,7 @@ def preflight_check(provider_names: list[str]) -> None:
             logger.warning(f"{provider.display_name}: {status_msg}")
 
     if errors:
-        raise ProviderCommandError(
-            "Preflight check failed:\n" + "\n".join(f"  - {e}" for e in errors)
-        )
+        raise ProviderCommandError("Preflight check failed:\n" + "\n".join(f"  - {e}" for e in errors))
 
 
 def doctor() -> None:
@@ -101,7 +93,7 @@ def doctor() -> None:
 
         if not provider.check_cli():
             fix = _FIX_SUGGESTIONS.get(provider.cli_name, {}).get("not_found", "")
-            print(f"  CLI:  NOT FOUND")
+            print("  CLI:  NOT FOUND")
             if fix:
                 print(f"  Fix:  {fix}")
             continue

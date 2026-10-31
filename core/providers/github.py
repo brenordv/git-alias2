@@ -35,10 +35,7 @@ class GitHubProvider(Provider):
         output = result.stdout or result.stderr
         l_output = output.lower()
 
-        is_logged = any(
-            msg in l_output
-            for msg in ["logged in to github.com account", "logged in to github.com as"]
-        )
+        is_logged = any(msg in l_output for msg in ["logged in to github.com account", "logged in to github.com as"])
 
         if is_logged:
             username = _extract_username_from_output(output)
@@ -81,14 +78,10 @@ class GitHubProvider(Provider):
             json_output = json.loads(output)
             repo_url = json_output.get("url")
             if repo_url is None:
-                raise RepoCreationError(
-                    f"{_tag} Could not get remote url. Output: {output}"
-                )
+                raise RepoCreationError(f"{_tag} Could not get remote url. Output: {output}")
             return ensure_git_suffix(repo_url)
         except json.JSONDecodeError:
-            raise RepoCreationError(
-                f"{_tag} Could not get remote url. Output: {output}"
-            )
+            raise RepoCreationError(f"{_tag} Could not get remote url. Output: {output}")
 
     @stop_watch(f"{_tag} Creating repository")
     def create_repo(self, name: str) -> str:
@@ -97,13 +90,9 @@ class GitHubProvider(Provider):
         output = (result.stdout or result.stderr).strip()
 
         if not output.lower().startswith("https"):
-            raise RepoCreationError(
-                f"{_tag} Repository creation failed. Output: {output}"
-            )
+            raise RepoCreationError(f"{_tag} Repository creation failed. Output: {output}")
 
-        remote_url = ensure_git_suffix(
-            output.replace("\n", "").replace("\r", "").strip()
-        )
+        remote_url = ensure_git_suffix(output.replace("\n", "").replace("\r", "").strip())
         logger.info(f"{_tag} Repository created: {remote_url}")
         return remote_url
 

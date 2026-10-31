@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 
 from git import Repo
@@ -16,8 +17,30 @@ from core.repo_analyzer import (
 )
 from core.utils import get_logger
 
+# On Windows the provider CLIs can be batch files (az.cmd), whose arguments the shell parses without escaping,
+# so a repository name may only contain characters that are inert there. A leading '-' or space is refused too:
+# the CLIs would read a name like "-x" as an option.
+_REPO_NAME_PATTERN = re.compile(r"[A-Za-z0-9._][A-Za-z0-9._ -]*")
+
+
+def _validate_repo_name(repo_name: str) -> None:
+    """Reject repository names with characters outside letters, digits, spaces, '.', '_' and '-'.
+
+    Args:
+        repo_name: The repository name passed to the provider CLIs.
+
+    Raises:
+        GitAliasError: If the name is empty, starts with '-' or a space, or has any other character.
+    """
+    if not _REPO_NAME_PATTERN.fullmatch(repo_name):
+        raise GitAliasError(
+            f"Invalid repository name {repo_name!r}. Use only letters, digits, spaces, '.', '_' and '-', "
+            "and start with a letter, digit, '.' or '_'."
+        )
+
 
 def create_command(repo_name: str, provider_names: list[str] | None = None) -> None:
+    _validate_repo_name(repo_name)
     provider_names = provider_names or list(DEFAULT_PROVIDERS)
     logger = get_logger()
 
@@ -77,10 +100,7 @@ def fix_create_command(provider_names: list[str] | None = None) -> None:
             return
 
         if not repo_name:
-            logger.error(
-                "Could not detect repository name from existing remotes. "
-                "Use 'g create <name>' instead."
-            )
+            logger.error("Could not detect repository name from existing remotes. Use 'g create <name>' instead.")
             return
 
         logger.info(f"Detected repo name: {repo_name}")
@@ -90,6 +110,7 @@ def fix_create_command(provider_names: list[str] | None = None) -> None:
         missing = provider_names
         repo_name = cwd.name
 
+    _validate_repo_name(repo_name)
     preflight_check(missing)
 
     new_urls: list[str] = []
@@ -100,9 +121,7 @@ def fix_create_command(provider_names: list[str] | None = None) -> None:
 
             try:
                 url = provider.get_remote_url(repo_name)
-                logger.info(
-                    f"{provider.display_name} repo already exists: {url}"
-                )
+                logger.info(f"{provider.display_name} repo already exists: {url}")
             except GitAliasError:
                 url = provider.create_repo(repo_name)
                 logger.info(f"Created {provider.display_name} repo: {url}")
@@ -144,11 +163,10 @@ def add_remote_command(
         remotes = get_existing_remotes(cwd)
         repo_name = detect_repo_name(remotes)
         if not repo_name:
-            logger.error(
-                "Could not detect repository name. Use --repo-name to specify it."
-            )
+            logger.error("Could not detect repository name. Use --repo-name to specify it.")
             return
 
+    _validate_repo_name(repo_name)
     preflight_check([provider_name])
 
     provider = get_provider(provider_name)
@@ -204,7 +222,4 @@ def tag_command(
     if push:
         push_tag(repo, tag_name)
     else:
-        logger.info(
-            f"Tag '{tag_name}' created locally. "
-            f"Push with: git push origin {tag_name}"
-        )
+        logger.info(f"Tag '{tag_name}' created locally. Push with: git push origin {tag_name}")

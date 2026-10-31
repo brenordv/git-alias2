@@ -80,9 +80,7 @@ enable_parser.add_argument(
 )
 
 # tag
-tag_parser = subparsers.add_parser(
-    "tag", help="Create an annotated tag on master."
-)
+tag_parser = subparsers.add_parser("tag", help="Create an annotated tag on master.")
 tag_parser.add_argument("tag_name", type=str, help="Name of the tag")
 tag_parser.add_argument(
     "-m",
@@ -100,7 +98,8 @@ tag_parser.add_argument(
 subparsers.add_parser("doctor", help="Run diagnostics and report system status.")
 
 
-def main():
+def main() -> None:
+    """Parse the command line and run the selected command."""
     args = parser.parse_args()
 
     try:
@@ -123,7 +122,7 @@ def main():
             else:
                 enable_provider(args.provider)
                 print(f"Enabled {args.provider}.")
-                print(f"Use 'g fix-create' to create repos on any missing providers.")
+                print("Use 'g fix-create' to create repos on any missing providers.")
         elif args.command == "tag":
             tag_command(args.tag_name, args.message, args.push)
         elif args.command == "doctor":

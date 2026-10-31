@@ -10,9 +10,7 @@ from core.providers.azure import AzureDevOpsProvider
 class TestAzureProviderCheckAuth:
     @patch("core.providers.azure.run_cli")
     def test_logged_in(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout=json.dumps({"value": [{"name": "proj1"}, {"name": "proj2"}]})
-        )
+        mock_run.return_value = _make_result(stdout=json.dumps({"value": [{"name": "proj1"}, {"name": "proj2"}]}))
         provider = AzureDevOpsProvider()
         is_auth, msg = provider.check_auth()
         assert is_auth is True
@@ -20,9 +18,7 @@ class TestAzureProviderCheckAuth:
 
     @patch("core.providers.azure.run_cli")
     def test_logged_in_empty_projects(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout=json.dumps({"value": []})
-        )
+        mock_run.return_value = _make_result(stdout=json.dumps({"value": []}))
         provider = AzureDevOpsProvider()
         is_auth, msg = provider.check_auth()
         assert is_auth is True
@@ -62,18 +58,14 @@ class TestAzureProviderGetRemoteUrl:
 
     @patch("core.providers.azure.run_cli")
     def test_missing_remote_url_field(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout=json.dumps({"id": "abc", "name": "repo"})
-        )
+        mock_run.return_value = _make_result(stdout=json.dumps({"id": "abc", "name": "repo"}))
         provider = AzureDevOpsProvider()
         with pytest.raises(RepoCreationError):
             provider.get_remote_url("repo")
 
     @patch("core.providers.azure.run_cli")
     def test_nonzero_returncode_includes_stderr(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout="", stderr="TF401019: The project does not exist", returncode=1
-        )
+        mock_run.return_value = _make_result(stdout="", stderr="TF401019: The project does not exist", returncode=1)
         provider = AzureDevOpsProvider()
         with pytest.raises(RepoCreationError, match="TF401019"):
             provider.get_remote_url("repo")
@@ -84,11 +76,13 @@ class TestAzureProviderCreateRepo:
     @patch("core.providers.azure.run_cli")
     def test_success(self, mock_run, mock_get_url):
         mock_run.return_value = _make_result(
-            stdout=json.dumps({
-                "id": "abc-123",
-                "name": "my-repo",
-                "state": "wellFormed",
-            })
+            stdout=json.dumps(
+                {
+                    "id": "abc-123",
+                    "name": "my-repo",
+                    "state": "wellFormed",
+                }
+            )
         )
         mock_get_url.return_value = "https://dev.azure.com/org/my-repo/_git/my-repo"
 
@@ -99,11 +93,13 @@ class TestAzureProviderCreateRepo:
     @patch("core.providers.azure.run_cli")
     def test_bad_state(self, mock_run):
         mock_run.return_value = _make_result(
-            stdout=json.dumps({
-                "id": "abc-123",
-                "name": "my-repo",
-                "state": "failed",
-            })
+            stdout=json.dumps(
+                {
+                    "id": "abc-123",
+                    "name": "my-repo",
+                    "state": "failed",
+                }
+            )
         )
         provider = AzureDevOpsProvider()
         with pytest.raises(RepoCreationError, match="State: failed"):
@@ -127,9 +123,7 @@ class TestAzureProviderCreateRepo:
 
     @patch("core.providers.azure.run_cli")
     def test_nonzero_returncode_falls_back_to_stdout(self, mock_run):
-        mock_run.return_value = _make_result(
-            stdout="some error on stdout", stderr="", returncode=1
-        )
+        mock_run.return_value = _make_result(stdout="some error on stdout", stderr="", returncode=1)
         provider = AzureDevOpsProvider()
         with pytest.raises(RepoCreationError, match="some error on stdout"):
             provider.create_repo("my-repo")
@@ -137,4 +131,5 @@ class TestAzureProviderCreateRepo:
 
 def _make_result(stdout="", stderr="", returncode=0):
     from subprocess import CompletedProcess
+
     return CompletedProcess(args=[], returncode=returncode, stdout=stdout, stderr=stderr)
